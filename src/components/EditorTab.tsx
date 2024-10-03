@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Code,
   FileJson,
@@ -21,7 +22,7 @@ import {
   FileX,
   Key,
 } from 'lucide-react'
-import CodeEditor from '@/components/CodeEditor'
+import CodeEditor from './CodeEditor'
 
 type EditorLanguage = 'json' | 'yaml' | 'xml'
 
@@ -51,7 +52,6 @@ export default function EditorTab({ input, setInput }: EditorTabProps) {
       .replace(/on\w+="[^"]*"/g, '')
       .replace(/javascript:/gi, '')
   }
-
   const parseJson = () => {
     try {
       const parsed = JSON.parse(input)
@@ -233,42 +233,69 @@ export default function EditorTab({ input, setInput }: EditorTabProps) {
     }
   }
 
-  return (
+  return(
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             <span>Input</span>
             <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={undo}
-                disabled={undoStack.length === 0}
-                aria-label="Undo"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={redo}
-                disabled={redoStack.length === 0}
-                aria-label="Redo"
-              >
-                <RotateCw className="h-4 w-4" />
-              </Button>
-              <Label htmlFor="file-upload" className="cursor-pointer">
-                <Upload className="h-4 w-4" />
-                <Input
-                  id="file-upload"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileUpload}
-                  accept=".json,.yaml,.yml,.xml"
-                  aria-label="Upload file"
-                />
-              </Label>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={undo}
+                      disabled={undoStack.length === 0}
+                      aria-label="Undo"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Undo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={redo}
+                      disabled={redoStack.length === 0}
+                      aria-label="Redo"
+                    >
+                      <RotateCw className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Redo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Label htmlFor="file-upload" className="cursor-pointer">
+                      <Upload className="h-4 w-4" />
+                      <Input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileUpload}
+                        accept=".json,.yaml,.yml,.xml"
+                        aria-label="Upload file"
+                      />
+                    </Label>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Upload File</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </CardTitle>
         </CardHeader>
@@ -284,12 +311,12 @@ export default function EditorTab({ input, setInput }: EditorTabProps) {
               <TabsTrigger value="xml">XML</TabsTrigger>
             </TabsList>
           </Tabs>
-          <CodeEditor
-            value={input}
-            onChange={handleInputChange}
-            language={inputLanguage}
-            aria-label={`${inputLanguage.toUpperCase()} Input Editor`}
-          />
+            <CodeEditor
+              value={input}
+              onChange={handleInputChange}
+              language={inputLanguage}
+              aria-label={`${inputLanguage.toUpperCase()} Input Editor`}
+            />
         </CardContent>
       </Card>
 
@@ -319,13 +346,13 @@ export default function EditorTab({ input, setInput }: EditorTabProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <CodeEditor
-            value={output}
-            onChange={() => {}}
-            language={outputLanguage}
-            readOnly={true}
-            aria-label={`${outputLanguage.toUpperCase()} Output Editor`}
-          />
+            <CodeEditor
+              value={output}
+              onChange={() => {}}
+              language={outputLanguage}
+              readOnly={true}
+              aria-label={`${outputLanguage.toUpperCase()} Output Editor`}
+            />
         </CardContent>
       </Card>
 
